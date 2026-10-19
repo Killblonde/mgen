@@ -1,5 +1,6 @@
 // Разбор команды и подсказка. Всё по-русски, без жаргона.
 import { CLI_NAME, CLI_VERSION } from './brand.js';
+import { HelpRequested } from './args.js';
 import { UserError } from './errors.js';
 import { balance } from './commands/balance.js';
 import { doctor } from './commands/doctor.js';
@@ -11,20 +12,78 @@ import { models } from './commands/models.js';
 import { setup } from './commands/setup.js';
 import { status } from './commands/status.js';
 import { video } from './commands/video.js';
+import { editFlags } from './commands/edit.js';
+import { framesFlags } from './commands/frames.js';
+import { imageFlags } from './commands/image.js';
+import { statusFlags } from './commands/status.js';
+import { templateFlags } from './commands/template.js';
+import { videoFlags } from './commands/video.js';
 import { bold, dim, say } from './ui.js';
 
 const COMMANDS = {
   setup: { run: setup, about: 'сохранить ключ kie.ai' },
   balance: { run: balance, about: 'сколько осталось кредитов' },
   models: { run: models, about: 'список моделей и цены' },
-  image: { run: image, about: 'сделать картинку по описанию' },
-  edit: { run: edit, about: 'поправить готовую картинку' },
-  video: { run: video, about: 'оживить картинку — сделать видео' },
-  frames: { run: frames, about: 'нарезать видео на кадры для прокрутки' },
-  template: { run: template, about: 'положить готовый кусок для сайта' },
-  status: { run: status, about: 'что с долгой задачей' },
+  image: {
+    run: image,
+    about: 'сделать картинку по описанию',
+    flags: imageFlags,
+    example: `${CLI_NAME} image "портрет у окна, мягкий свет" --size 4:5 --n 3 --draft`,
+  },
+  edit: {
+    run: edit,
+    about: 'поправить готовую картинку',
+    flags: editFlags,
+    example: `${CLI_NAME} edit cover.jpg "сделай фон темнее"`,
+  },
+  video: {
+    run: video,
+    about: 'оживить картинку — сделать видео',
+    flags: videoFlags,
+    example: `${CLI_NAME} video start.jpg "камера медленно приближается" --end finish.jpg --res 720`,
+  },
+  frames: {
+    run: frames,
+    about: 'нарезать видео на кадры для прокрутки',
+    flags: framesFlags,
+    example: `${CLI_NAME} frames shapka.mp4 --out ./site/frames --count 120`,
+  },
+  template: {
+    run: template,
+    about: 'положить готовый кусок для сайта',
+    flags: templateFlags,
+    example: `${CLI_NAME} template scroll --out ./site`,
+  },
+  status: {
+    run: status,
+    about: 'что с долгой задачей',
+    flags: statusFlags,
+    example: `${CLI_NAME} status dc1928bfcbc77cb6c85f3359a9c718b3`,
+  },
   doctor: { run: doctor, about: 'проверить, всё ли готово к работе' },
 };
+
+/** Подсказка по одной команде: печатается по --help. */
+function commandHelp(name, command) {
+  say('');
+  say(`${bold(`${CLI_NAME} ${name}`)} — ${command.about}`);
+  if (command.example) {
+    say('');
+    say('Пример:');
+    say(`  ${command.example}`);
+  }
+  const flags = Object.entries(command.flags || {});
+  if (flags.length) {
+    say('');
+    say('Флаги:');
+    for (const [flag, def] of flags) {
+      const hint = def.hint || (def.type === 'boolean' ? 'да или нет, по умолчанию нет' : '');
+      say(`  --${flag.padEnd(10)} ${dim(hint)}`);
+    }
+  }
+  say('');
+  say(dim(`Все команды: ${CLI_NAME} help`));
+}
 
 function help() {
   say('');
@@ -77,5 +136,18 @@ export async function main(argv) {
     );
   }
 
-  await command.run(rest);
+  if (rest.includes('--help') || rest.includes('-h')) {
+    commandHelp(name, command);
+    return;
+  }
+
+  try {
+    await command.run(rest);
+  } catch (error) {
+    if (error instanceof HelpRequested) {
+      commandHelp(name, command);
+      return;
+    }
+    throw error;
+  }
 }

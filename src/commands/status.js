@@ -11,7 +11,7 @@ import { CLI_NAME } from '../brand.js';
 import { bold, creditsText, dim, ok, say, usd, warn } from '../ui.js';
 
 export const statusFlags = {
-  out: { type: 'string' },
+  out: { type: 'string', hint: 'куда скачать готовый файл: --out ./generated' },
 };
 
 const STATE_RU = {

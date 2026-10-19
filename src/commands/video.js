@@ -14,12 +14,12 @@ export const videoFlags = {
   resolution: { type: 'string', hint: 'разрешение: --resolution 720p' },
   res: { type: 'string', hint: 'то же короче: --res 720' },
   end: { type: 'string', hint: 'конечный кадр: --end finish.jpg' },
-  loop: { type: 'boolean' },
-  audio: { type: 'boolean' },
-  draft: { type: 'boolean' },
+  loop: { type: 'boolean', hint: 'вернуть последний кадр к первому (петля)' },
+  audio: { type: 'boolean', hint: 'добавить звук, по умолчанию видео без звука' },
+  draft: { type: 'boolean', hint: 'дешёвая модель для проб' },
   model: { type: 'string', hint: 'имя модели из «mgen models»' },
-  out: { type: 'string' },
-  yes: { type: 'boolean' },
+  out: { type: 'string', hint: 'куда положить результат: --out ./site/video' },
+  yes: { type: 'boolean', hint: 'не спрашивать подтверждение (цена всё равно видна)' },
 };
 
 export async function video(argv) {
@@ -100,8 +100,12 @@ export async function video(argv) {
   });
 
   if (result.files.length) {
+    const tips = [];
+    if (model.alias !== 'draft') tips.push('дешевле — добавь --draft');
+    if (resolution !== '720p' && model.resolutions.includes('720p')) tips.push('чётче — --res 720');
+    if (resolution === '720p' && model.resolutions.includes('1080p')) tips.push('ещё чётче — --res 1080');
     say('');
-    say(dim('Видео делается минуту-другую. Если нужно дешевле — добавь --draft, если красивее — --resolution 720p.'));
+    say(dim(tips.length ? `Можно иначе: ${tips.join(', ')}.` : 'Это уже самый подробный вариант у этой модели.'));
   }
   return result;
 }

@@ -14,8 +14,8 @@ export const editFlags = {
   model: { type: 'string', hint: 'edit (дешёвая) или pro (аккуратнее)' },
   ref: { type: 'string', multiple: true, hint: 'ещё картинки-подсказки: --ref стиль.jpg' },
   n: { type: 'number', hint: 'сколько вариантов правки: --n 2' },
-  out: { type: 'string' },
-  yes: { type: 'boolean' },
+  out: { type: 'string', hint: 'куда положить результат: --out ./site/img' },
+  yes: { type: 'boolean', hint: 'не спрашивать подтверждение (цена всё равно видна)' },
 };
 
 export async function edit(argv) {

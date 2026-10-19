@@ -128,7 +128,19 @@ export function parseDuration(text) {
   return Number(match[1]) * 3600 + Number(match[2]) * 60 + Number(match[3]);
 }
 
-export async function videoDuration(bin, file) {
+/** Кадры в секунду и размер кадра из того же вывода ffmpeg. */
+export function parseStream(text) {
+  const fps = String(text).match(/(\d+(?:\.\d+)?)\s*fps/);
+  const size = String(text).match(/,\s(\d{2,5})x(\d{2,5})[\s,]/);
+  return {
+    fps: fps ? Number(fps[1]) : null,
+    width: size ? Number(size[1]) : null,
+    height: size ? Number(size[2]) : null,
+  };
+}
+
+/** Что внутри видео: длительность, кадры в секунду, размер. */
+export async function probeVideo(bin, file) {
   const { err } = await run(bin, ['-hide_banner', '-i', file]);
   const duration = parseDuration(err);
   if (duration === null) {
@@ -137,12 +149,40 @@ export async function videoDuration(bin, file) {
       'Проверьте, что это обычный mp4 или mov.',
     );
   }
-  return duration;
+  const stream = parseStream(err);
+  return {
+    duration,
+    fps: stream.fps,
+    width: stream.width,
+    height: stream.height,
+    // Больше кадров, чем есть в видео, нарезать бессмысленно: пойдут дубли.
+    available: stream.fps ? Math.floor(duration * stream.fps) : null,
+  };
+}
+
+export async function videoDuration(bin, file) {
+  return (await probeVideo(bin, file)).duration;
 }
 
 /** Режем видео на кадры: ровно count штук, ширина width, разумный вес. */
-export async function extractFrames({ bin, input, outDir, count, width, quality }) {
-  const duration = await videoDuration(bin, input);
+export async function extractFrames({ bin, input, outDir, count, width, quality, onAdjust }) {
+  const info = await probeVideo(bin, input);
+  const duration = info.duration;
+
+  // Просить кадров больше, чем есть в видео, или ширину больше исходной — пустая трата веса.
+  let wantCount = count;
+  let wantWidth = width;
+  if (info.available && wantCount > info.available) {
+    onAdjust?.({ what: 'count', from: wantCount, to: info.available, info });
+    wantCount = info.available;
+  }
+  if (info.width && wantWidth > info.width) {
+    onAdjust?.({ what: 'width', from: wantWidth, to: info.width, info });
+    wantWidth = info.width;
+  }
+  count = wantCount;
+  width = wantWidth;
+
   const fps = count / duration;
   fs.mkdirSync(outDir, { recursive: true });
 
@@ -177,5 +217,5 @@ export async function extractFrames({ bin, input, outDir, count, width, quality 
     .filter((name) => /^frame-\d+\.jpg$/.test(name))
     .sort();
   const bytes = files.reduce((sum, name) => sum + fs.statSync(path.join(outDir, name)).size, 0);
-  return { files, bytes, duration };
+  return { files, bytes, duration, count, width, info };
 }

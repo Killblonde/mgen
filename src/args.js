@@ -1,8 +1,13 @@
 // Простой разбор аргументов: свои флаги, понятные ошибки, без зависимостей.
 import { UserError } from './errors.js';
 
+export class HelpRequested extends Error {}
+
 export function parse(argv, spec) {
   const out = { _: [] };
+  if (argv.includes('--help') || argv.includes('-h')) {
+    throw new HelpRequested();
+  }
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
 

@@ -13,7 +13,7 @@ export const framesFlags = {
   width: { type: 'number', hint: 'ширина кадра в пикселях: --width 1600' },
   quality: { type: 'number', hint: 'качество JPEG, 2 лучше и тяжелее, 8 хуже и легче' },
   out: { type: 'string', hint: 'куда положить кадры: --out ./site/frames' },
-  yes: { type: 'boolean' },
+  yes: { type: 'boolean', hint: 'согласиться на установку ffmpeg заранее' },
 };
 
 const mb = (bytes) => `${(bytes / 1024 / 1024).toFixed(1)} МБ`;
@@ -54,7 +54,7 @@ export async function frames(argv) {
   }
 
   const ffmpeg = await ensureFfmpeg({ yes: args.yes });
-  step(`Нарезаю ${count} кадров шириной ${width} пикселей…`);
+  step('Смотрю, что внутри видео…');
 
   const result = await extractFrames({
     bin: ffmpeg.path,
@@ -63,6 +63,17 @@ export async function frames(argv) {
     count,
     width,
     quality,
+    onAdjust: ({ what, from, to, info }) => {
+      if (what === 'count') {
+        say(
+          dim(
+            `В видео всего ${to} кадров (${info.fps} в секунду), поэтому режу ${to}, а не ${from}: лишние были бы дублями.`,
+          ),
+        );
+      } else {
+        say(dim(`Ширина исходного видео ${to} пикселей, беру её: растягивать до ${from} незачем.`));
+      }
+    },
   });
 
   const average = result.bytes / Math.max(1, result.files.length);
@@ -70,6 +81,7 @@ export async function frames(argv) {
   ok(`Готово: ${result.files.length} кадров в ${outDir}`);
   say(`  вес всех кадров: ${mb(result.bytes)} (в среднем ${Math.round(average / 1024)} КБ на кадр)`);
   say(`  длительность исходного видео: ${result.duration.toFixed(1)} сек`);
+  say(dim(`  в разметке страницы поставьте data-count="${result.files.length}"`));
 
   if (average > 220 * 1024) {
     say('');

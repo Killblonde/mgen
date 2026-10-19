@@ -13,7 +13,7 @@ const templatesDir = path.join(here, '..', '..', 'templates');
 
 export const templateFlags = {
   out: { type: 'string', hint: 'куда положить файлы: --out ./site' },
-  force: { type: 'boolean' },
+  force: { type: 'boolean', hint: 'перезаписать файлы, если они уже есть' },
 };
 
 export const TEMPLATES = {
@@ -67,8 +67,20 @@ export async function template(argv) {
     ok(`Положил ${copied.length} файла в ${outDir}`);
     for (const file of copied) say(`  ${path.basename(file)}`);
   }
-  say('');
-  say(dim('Как подключить: смотрите templates/scroll/README.md в репозитории mgen'));
-  say(dim(`или пример разметки там же в example.html.`));
+  if (name === 'scroll') {
+    say('');
+    say('Как подключить (вставьте в свою страницу):');
+    say(dim('  <link rel="stylesheet" href="scroll-frames.css">'));
+    say(dim('  <section class="mgen-scroll" data-frames="frames/frame-$.jpg" data-count="120" data-pad="4">'));
+    say(dim('    <div class="mgen-scroll__sticky">'));
+    say(dim('      <canvas class="mgen-scroll__canvas"></canvas>'));
+    say(dim('      <img class="mgen-scroll__fallback" src="frames/frame-0001.jpg" alt="">'));
+    say(dim('      <div class="mgen-scroll__overlay"><h1>Заголовок поверх кадров</h1></div>'));
+    say(dim('    </div>'));
+    say(dim('  </section>'));
+    say(dim('  <script src="scroll-frames.js"></script>'));
+    say('');
+    say(dim('data-count — сколько кадров нарезала команда frames, она сама это печатает.'));
+  }
   return { copied, outDir };
 }

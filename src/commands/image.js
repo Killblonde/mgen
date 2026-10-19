@@ -13,11 +13,11 @@ export const imageFlags = {
   ref: { type: 'string', multiple: true, hint: 'путь к своему фото: --ref photo.jpg' },
   size: { type: 'string', hint: 'формат кадра: --size 16:9' },
   n: { type: 'number', hint: 'сколько вариантов: --n 3' },
-  draft: { type: 'boolean' },
+  draft: { type: 'boolean', hint: 'дешёвая модель для черновиков' },
   quality: { type: 'string', hint: 'качество: --quality 4k' },
   model: { type: 'string', hint: 'имя модели из «mgen models»' },
   out: { type: 'string', hint: 'куда сохранить: --out ./covers' },
-  yes: { type: 'boolean' },
+  yes: { type: 'boolean', hint: 'не спрашивать подтверждение (цена всё равно видна)' },
 };
 
 export async function image(argv) {
