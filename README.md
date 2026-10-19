@@ -55,7 +55,7 @@ node -v
 ## 3. Установка одной командой
 
 ```bash
-npm i -g https://github.com/ВАШ-АККАУНТ/mgen.git
+npm i -g https://github.com/Killblonde/mgen.git
 ```
 
 Проверить, что установилось:
@@ -67,7 +67,7 @@ mgen help
 Если не хочется ставить насовсем, можно запускать так (команда сама скачает программу):
 
 ```bash
-npx https://github.com/ВАШ-АККАУНТ/mgen.git help
+npx https://github.com/Killblonde/mgen.git help
 ```
 
 Пока репозиторий лежит только на компьютере, установить можно из папки:
