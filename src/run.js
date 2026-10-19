@@ -7,7 +7,7 @@ import { UserError } from './errors.js';
 import { fileBaseName } from './naming.js';
 import { CREDITS_PER_USD, toUsd } from './price.js';
 import { CLI_NAME } from './brand.js';
-import { bold, credits as fmtCredits, dim, ok, progress, progressDone, say, seconds, step, usd, warn, yellow } from './ui.js';
+import { bold, creditsText, dim, ok, plural, progress, progressDone, say, seconds, step, usd, warn, yellow } from './ui.js';
 
 const STATE_RU = {
   waiting: 'ждёт своей очереди',
@@ -35,15 +35,15 @@ function pollInterval(elapsedMs) {
 }
 
 function printPlan({ modelTitle, kind, count, estimate, balance, extraLines }) {
-  const what = kind === 'video' ? 'видео' : count > 1 ? 'картинок' : 'картинка';
+  const what = kind === 'video' ? 'видео' : plural(count, ['картинка', 'картинки', 'картинок']);
   say('');
   say(bold('Что собираюсь сделать'));
   say(`  модель:    ${modelTitle}`);
   say(`  сколько:   ${count} ${what}`);
   for (const line of extraLines || []) say(`  ${line}`);
-  say(`  цена:      ${fmtCredits(estimate.credits)} кредитов (примерно ${usd(estimate.usd)})`);
-  say(`  баланс:    ${fmtCredits(balance)} кредитов (примерно ${usd(toUsd(balance))})`);
-  say(dim(`  останется: ${fmtCredits(balance - estimate.credits)} кредитов`));
+  say(`  цена:      ${creditsText(estimate.credits)} (примерно ${usd(estimate.usd)})`);
+  say(`  баланс:    ${creditsText(balance)} (примерно ${usd(toUsd(balance))})`);
+  if (balance >= estimate.credits) say(dim(`  останется: ${creditsText(balance - estimate.credits)}`));
   say('');
 }
 
@@ -68,7 +68,7 @@ export async function runGeneration(job) {
 
   if (estimate.credits > balance) {
     throw new UserError(
-      `Не хватает кредитов: на балансе ${fmtCredits(balance)}, а нужно ${fmtCredits(estimate.credits)}.`,
+      `Не хватает кредитов: на балансе ${creditsText(balance)}, а нужно ${creditsText(estimate.credits)}.`,
       `Пополни баланс на https://kie.ai (${CREDITS_PER_USD} кредитов = $1) или возьми вариант подешевле: --draft.`,
     );
   }
@@ -78,7 +78,7 @@ export async function runGeneration(job) {
     return { cancelled: true, files: [] };
   }
 
-  step(`Отправляю задачу${count > 1 ? ` (${count} штуки)` : ''} на kie.ai…`);
+  step(`Отправляю ${count > 1 ? `${count} ${plural(count, ['задачу', 'задачи', 'задач'])}` : 'задачу'} на kie.ai…`);
   const tasks = [];
   for (let i = 0; i < count; i += 1) {
     const taskId = await createTask(key, { model: modelId, input, onRetry });
@@ -167,7 +167,7 @@ export async function runGeneration(job) {
   if (files.length) {
     const fact = spent > 0 ? spent : estimate.credits;
     say('');
-    say(`Потрачено: ${fmtCredits(fact)} кредитов (примерно ${usd(toUsd(fact))}).`);
+    say(`Потрачено: ${creditsText(fact)} (примерно ${usd(toUsd(fact))}).`);
     say(dim(`Рядом с каждым файлом лежит .json — там промпт, модель и цена.`));
   } else if (finished === tasks.length) {
     say(yellow('Файлов нет. Деньги списываются только за удачные генерации.'));

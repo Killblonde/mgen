@@ -5,7 +5,7 @@ import { configPath, writeConfig } from '../config.js';
 import { ApiError, UserError } from '../errors.js';
 import { toUsd } from '../price.js';
 import { CLI_NAME } from '../brand.js';
-import { bold, credits, dim, ok, say, step, usd } from '../ui.js';
+import { bold, creditsText, dim, ok, say, step, usd } from '../ui.js';
 
 export async function setup() {
   say('');
@@ -33,7 +33,7 @@ export async function setup() {
 
   writeConfig({ apiKey: key, savedAt: new Date().toISOString() });
   ok('Ключ принят и сохранён.');
-  say(`Баланс: ${credits(balance)} кредитов (примерно ${usd(toUsd(balance))}).`);
+  say(`Баланс: ${creditsText(balance)} (примерно ${usd(toUsd(balance))}).`);
   say(dim(`Файл с ключом: ${configPath} (только для тебя, права 600).`));
   say(dim('Если задать переменную окружения KIE_API_KEY, она важнее этого файла.'));
   say('');

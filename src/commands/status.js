@@ -8,7 +8,7 @@ import { fileBaseName } from '../naming.js';
 import { toUsd } from '../price.js';
 import { titleOf } from '../models.js';
 import { CLI_NAME } from '../brand.js';
-import { bold, credits, dim, ok, say, usd, warn } from '../ui.js';
+import { bold, creditsText, dim, ok, say, usd, warn } from '../ui.js';
 
 export const statusFlags = {
   out: { type: 'string' },
@@ -48,7 +48,7 @@ export async function status(argv) {
   say(`  модель:   ${titleOf(info.model)}`);
   say(`  состояние: ${STATE_RU[info.state] || info.state}`);
   if (info.creditsConsumed) {
-    say(`  списано:  ${credits(info.creditsConsumed)} кредитов (примерно ${usd(toUsd(info.creditsConsumed))})`);
+    say(`  списано:  ${creditsText(info.creditsConsumed)} (примерно ${usd(toUsd(info.creditsConsumed))})`);
   }
 
   if (info.state === 'fail') {

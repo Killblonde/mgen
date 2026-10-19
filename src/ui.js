@@ -53,6 +53,26 @@ export function usd(value) {
   return `$${(Math.round(value * 1000) / 1000).toFixed(value < 1 ? 3 : 2)}`;
 }
 
+/** Русское согласование: 1 кредит, 2 кредита, 5 кредитов. */
+export function plural(count, [one, few, many]) {
+  const n = Math.abs(Math.round(count));
+  const tens = n % 100;
+  if (tens >= 11 && tens <= 14) return many;
+  const ones = n % 10;
+  if (ones === 1) return one;
+  if (ones >= 2 && ones <= 4) return few;
+  return many;
+}
+
+/** «4 кредита», «254 кредита» — с дробными числами всегда «кредита». */
+export function creditsWord(value) {
+  return Number.isInteger(value) ? plural(value, ['кредит', 'кредита', 'кредитов']) : 'кредита';
+}
+
+export function creditsText(value) {
+  return `${credits(value)} ${creditsWord(Math.round(value * 100) / 100)}`;
+}
+
 export function seconds(value) {
   const m = Math.floor(value / 60);
   const s = value % 60;

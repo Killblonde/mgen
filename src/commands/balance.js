@@ -3,7 +3,7 @@ import { getCredits } from '../api.js';
 import { requireKey, keySource } from '../config.js';
 import { estimateImage, estimateVideo, toUsd } from '../price.js';
 import { imageModels, videoModels } from '../models.js';
-import { bold, credits, dim, say, usd } from '../ui.js';
+import { bold, creditsText, dim, say, usd } from '../ui.js';
 
 export async function balance() {
   const key = requireKey();
@@ -14,7 +14,7 @@ export async function balance() {
   const video = estimateVideo(videoModels.draft.id, { resolution: '480p', duration: 5 }).credits;
 
   say('');
-  say(`${bold('Баланс:')} ${credits(value)} кредитов (примерно ${usd(toUsd(value))})`);
+  say(`${bold('Баланс:')} ${creditsText(value)} (примерно ${usd(toUsd(value))})`);
   say('');
   say('Этого хватит примерно на:');
   say(`  ${Math.floor(value / pro)} качественных картинок (Nano Banana Pro)`);

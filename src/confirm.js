@@ -15,7 +15,11 @@ export function ask(question) {
 /** Скрытый ввод: ключ не виден на экране и не остаётся в истории терминала. */
 export function askSecret(question) {
   return new Promise((resolve) => {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: true });
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: Boolean(process.stdin.isTTY),
+    });
     // Печатаем только сам вопрос, набираемые символы не показываем.
     rl._writeToOutput = (chunk) => {
       if (typeof chunk === 'string' && chunk.includes(question)) rl.output.write(question);
