@@ -6,15 +6,18 @@ import { balance } from './commands/balance.js';
 import { doctor } from './commands/doctor.js';
 import { frames } from './commands/frames.js';
 import { template } from './commands/template.js';
+import { skills, skillsFlags } from './commands/skills.js';
 import { edit } from './commands/edit.js';
 import { image } from './commands/image.js';
 import { models } from './commands/models.js';
+import { pack } from './commands/pack.js';
 import { setup } from './commands/setup.js';
 import { status } from './commands/status.js';
 import { video } from './commands/video.js';
 import { editFlags } from './commands/edit.js';
 import { framesFlags } from './commands/frames.js';
 import { imageFlags } from './commands/image.js';
+import { packFlags } from './commands/pack.js';
 import { statusFlags } from './commands/status.js';
 import { templateFlags } from './commands/template.js';
 import { videoFlags } from './commands/video.js';
@@ -54,11 +57,23 @@ const COMMANDS = {
     flags: templateFlags,
     example: `${CLI_NAME} template scroll --out ./site`,
   },
+  pack: {
+    run: pack,
+    about: 'собрать сайт в один файл',
+    flags: packFlags,
+    example: `${CLI_NAME} pack ./site --out сайт.html`,
+  },
   status: {
     run: status,
     about: 'что с долгой задачей',
     flags: statusFlags,
     example: `${CLI_NAME} status dc1928bfcbc77cb6c85f3359a9c718b3`,
+  },
+  skills: {
+    run: skills,
+    about: 'поставить навыки для Claude Code',
+    flags: skillsFlags,
+    example: `${CLI_NAME} skills install`,
   },
   doctor: { run: doctor, about: 'проверить, всё ли готово к работе' },
 };
@@ -103,6 +118,7 @@ function help() {
   say(`  ${CLI_NAME} video portret.jpg "лёгкое дыхание ветра, камера чуть приближается" --loop`);
   say(`  ${CLI_NAME} video start.jpg "камера отъезжает назад" --end finish.jpg --res 720`);
   say(`  ${CLI_NAME} frames shapka.mp4 --out ./site/frames`);
+  say(`  ${CLI_NAME} pack ./site --out сайт.html`);
   say('');
   say(bold('Полезное'));
   say(`  --draft   дешёвая модель для проб        --n 3        три варианта сразу`);
@@ -110,6 +126,7 @@ function help() {
   say(`  --ref     своё фото как образец           --yes        не спрашивать подтверждение`);
   say(`  --out     куда положить результат         --loop       видео вернётся к исходной позе`);
   say(`  --res     480, 720 или 1080 для видео     --end        конечный кадр видео`);
+  say(`  --frames  сколько кадров оставить в pack  --max-mb     порог веса готового файла`);
   say('');
   say(dim(`Результаты складываются в ./generated/ рядом с JSON-описанием генерации.`));
   say(dim(`Ключ: ${CLI_NAME} setup или переменная окружения KIE_API_KEY. Ключ на https://kie.ai/api-key`));
