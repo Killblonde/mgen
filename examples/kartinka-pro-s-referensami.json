@@ -1,0 +1,19 @@
+{
+  "prompt": "постер: бумажный самолётик из первой картинки летит над городом на закате, сохрани стиль и цвета референсов, свободное место сверху под заголовок",
+  "модель": "nano-banana-pro",
+  "параметры": {
+    "формат": "16:9",
+    "качество": "2K",
+    "вариантов": 1,
+    "референсы": [
+      "generated/2026-10-19_2217_prostaya-ikonka-prilozheniya-bumazhnyy_1.jpg",
+      "generated/2026-10-19_2217_prostaya-ikonka-prilozheniya-bumazhnyy_2.jpg"
+    ]
+  },
+  "цена_кредитов": 18,
+  "цена_долларов": 0.09,
+  "taskId": "f036322a8ef734c49cfd77d466b74509",
+  "ссылка": "https://tempfile.aiquickdraw.com/workers/images/image_a5906c7549d8dad780ccde72d0dfc872.jpg",
+  "создано": "2026-10-19T18:19:10.876Z",
+  "инструмент": "mgen image"
+}
