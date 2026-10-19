@@ -142,13 +142,14 @@ export const videoModels = {
   },
 };
 
-function buildSeedanceInput({ prompt, imageUrl, duration, resolution, loop, audio }) {
+function buildSeedanceInput({ prompt, imageUrl, endUrl, duration, resolution, loop, audio }) {
+  // Последний кадр у Seedance задаётся штатно: либо своей картинкой (движение из точки А
+  // в точку Б), либо той же самой (петля — движение возвращается в исходную позу).
+  const lastFrame = endUrl || (loop ? imageUrl : null);
   return {
     prompt,
     first_frame_url: imageUrl,
-    // Петля: последний кадр = первый. У Seedance это штатный параметр, модель
-    // сама придумывает движение, которое вернётся в исходную позу.
-    ...(loop ? { last_frame_url: imageUrl } : {}),
+    ...(lastFrame ? { last_frame_url: lastFrame } : {}),
     duration,
     resolution,
     aspect_ratio: 'adaptive',

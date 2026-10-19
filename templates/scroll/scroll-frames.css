@@ -1,0 +1,55 @@
+/* Анимация при прокрутке: кадры рисуются на холсте.
+   Высота секции задаёт, насколько долго «крутится» видео. */
+
+.mgen-scroll {
+  position: relative;
+  /* 300vh = экран прокручивается три высоты окна, пока идут кадры.
+     Больше высота — медленнее и подробнее движение. */
+  height: 300vh;
+  background: #000;
+}
+
+.mgen-scroll__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.mgen-scroll__canvas,
+.mgen-scroll__fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mgen-scroll__fallback {
+  object-fit: cover;
+}
+
+/* Пока холст не включился, виден обычный кадр-картинка. */
+.mgen-scroll__canvas { opacity: 0; transition: opacity 0.4s ease; }
+.mgen-scroll.is-ready .mgen-scroll__canvas { opacity: 1; }
+.mgen-scroll.is-ready .mgen-scroll__fallback { opacity: 0; }
+
+/* Содержимое поверх кадров: заголовок, кнопка и прочее. */
+.mgen-scroll__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.mgen-scroll__overlay > * { pointer-events: auto; }
+
+/* Телефон и режим «уменьшить движение»: вместо анимации одна картинка. */
+@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+  .mgen-scroll { height: 70vh; }
+  .mgen-scroll__sticky { position: relative; height: 70vh; }
+  .mgen-scroll__canvas { display: none; }
+  .mgen-scroll.is-ready .mgen-scroll__fallback { opacity: 1; }
+}

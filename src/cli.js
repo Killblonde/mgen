@@ -2,6 +2,9 @@
 import { CLI_NAME, CLI_VERSION } from './brand.js';
 import { UserError } from './errors.js';
 import { balance } from './commands/balance.js';
+import { doctor } from './commands/doctor.js';
+import { frames } from './commands/frames.js';
+import { template } from './commands/template.js';
 import { edit } from './commands/edit.js';
 import { image } from './commands/image.js';
 import { models } from './commands/models.js';
@@ -17,7 +20,10 @@ const COMMANDS = {
   image: { run: image, about: 'сделать картинку по описанию' },
   edit: { run: edit, about: 'поправить готовую картинку' },
   video: { run: video, about: 'оживить картинку — сделать видео' },
+  frames: { run: frames, about: 'нарезать видео на кадры для прокрутки' },
+  template: { run: template, about: 'положить готовый кусок для сайта' },
   status: { run: status, about: 'что с долгой задачей' },
+  doctor: { run: doctor, about: 'проверить, всё ли готово к работе' },
 };
 
 function help() {
@@ -36,12 +42,15 @@ function help() {
   say(`  ${CLI_NAME} image "иконка приложения, минимализм" --draft --n 3`);
   say(`  ${CLI_NAME} edit cover.jpg "сделай фон темнее, добавь мягкое свечение"`);
   say(`  ${CLI_NAME} video portret.jpg "лёгкое дыхание ветра, камера чуть приближается" --loop`);
+  say(`  ${CLI_NAME} video start.jpg "камера отъезжает назад" --end finish.jpg --res 720`);
+  say(`  ${CLI_NAME} frames shapka.mp4 --out ./site/frames`);
   say('');
   say(bold('Полезное'));
   say(`  --draft   дешёвая модель для проб        --n 3        три варианта сразу`);
   say(`  --size    формат кадра: 1:1 16:9 9:16 4:5  --quality 4k качество картинки`);
   say(`  --ref     своё фото как образец           --yes        не спрашивать подтверждение`);
   say(`  --out     куда положить результат         --loop       видео вернётся к исходной позе`);
+  say(`  --res     480, 720 или 1080 для видео     --end        конечный кадр видео`);
   say('');
   say(dim(`Результаты складываются в ./generated/ рядом с JSON-описанием генерации.`));
   say(dim(`Ключ: ${CLI_NAME} setup или переменная окружения KIE_API_KEY. Ключ на https://kie.ai/api-key`));

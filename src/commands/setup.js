@@ -5,13 +5,18 @@ import { configPath, writeConfig } from '../config.js';
 import { ApiError, UserError } from '../errors.js';
 import { toUsd } from '../price.js';
 import { CLI_NAME } from '../brand.js';
+import { openInBrowser } from '../open.js';
 import { bold, creditsText, dim, ok, say, step, usd } from '../ui.js';
+
+const KEY_PAGE = 'https://kie.ai/api-key';
 
 export async function setup() {
   say('');
   say(bold('Настройка доступа к kie.ai'));
   say('Ключ берётся на странице https://kie.ai/api-key — скопируй его целиком.');
   say(dim('При вводе ключ не отображается. Он сохранится только в твоей домашней папке.'));
+  const opened = openInBrowser(KEY_PAGE);
+  say(opened ? dim(`Открываю ${KEY_PAGE} в браузере…`) : dim(`Открой ${KEY_PAGE} в браузере.`));
   say('');
 
   const key = await askSecret('Вставь ключ и нажми Enter: ');

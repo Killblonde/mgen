@@ -12,6 +12,8 @@ import { dim, say, step } from '../ui.js';
 export const videoFlags = {
   duration: { type: 'number', hint: 'длительность в секундах: --duration 5' },
   resolution: { type: 'string', hint: 'разрешение: --resolution 720p' },
+  res: { type: 'string', hint: 'то же короче: --res 720' },
+  end: { type: 'string', hint: 'конечный кадр: --end finish.jpg' },
   loop: { type: 'boolean' },
   audio: { type: 'boolean' },
   draft: { type: 'boolean' },
@@ -35,7 +37,14 @@ export async function video(argv) {
   const key = requireKey();
   const model = pickModel(videoModels, args.model || (args.draft ? 'draft' : 'video'), { what: 'видео' });
   const duration = checkDuration(model, Math.round(args.duration || 5));
-  const resolution = checkResolution(model, normalizeResolution(args.resolution)) || '480p';
+  const resolution = checkResolution(model, normalizeResolution(args.res || args.resolution)) || '480p';
+
+  if (args.loop && args.end) {
+    throw new UserError(
+      'Флаги --loop и --end спорят друг с другом: оба задают последний кадр.',
+      'Нужна петля — оставьте --loop. Нужно движение в другую точку — оставьте --end.',
+    );
+  }
 
   if (args.loop && !model.supportsLoop) {
     throw new UserError(
@@ -44,8 +53,9 @@ export async function video(argv) {
     );
   }
 
-  step('Загружаю картинку в kie.ai (бесплатно)…');
+  step(`Загружаю ${args.end ? 'картинки' : 'картинку'} в kie.ai (бесплатно)…`);
   const imageUrl = await toRemoteUrl(key, file);
+  const endUrl = args.end ? await toRemoteUrl(key, args.end) : undefined;
 
   const estimate = estimateVideo(model.id, { resolution, duration });
   const extraLines = [
@@ -54,6 +64,7 @@ export async function video(argv) {
     `разрешение: ${resolution}`,
     `звук:      ${args.audio ? 'да' : 'нет'}`,
     ...(args.loop ? ['петля:     да (последний кадр = первый)'] : []),
+    ...(args.end ? [`конечный кадр: ${args.end}`] : []),
   ];
 
   const result = await runGeneration({
@@ -61,7 +72,15 @@ export async function video(argv) {
     modelId: model.id,
     modelTitle: titleOf(model.id),
     kind: 'video',
-    input: model.build({ prompt, imageUrl, duration, resolution, loop: args.loop, audio: args.audio }),
+    input: model.build({
+      prompt,
+      imageUrl,
+      endUrl,
+      duration,
+      resolution,
+      loop: args.loop,
+      audio: args.audio,
+    }),
     count: 1,
     estimate,
     extraLines,
@@ -73,6 +92,7 @@ export async function video(argv) {
         длительность_сек: duration,
         разрешение: resolution,
         петля: Boolean(args.loop),
+        конечный_кадр: args.end || null,
         звук: Boolean(args.audio),
       },
     },
