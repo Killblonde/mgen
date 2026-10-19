@@ -23,7 +23,7 @@ test('AGENTS.md собирается без YAML-шапки и содержит 
   await skills(['install', '--for', 'agents', '--out', dir]);
   const text = fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8');
   assert.equal(text.startsWith('---'), false, 'YAML-шапка Claude Code не должна попадать в AGENTS.md');
-  assert.match(text, /Генерация картинок и видео через mgen/);
+  assert.match(text, /Графика для сайтов через mgen/);
   assert.match(text, /Сайт по референсу/);
   assert.match(text, /без\*\* `--yes`/);
 });

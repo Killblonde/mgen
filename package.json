@@ -1,7 +1,7 @@
 {
   "name": "mgen",
   "version": "1.2.0",
-  "description": "Генерация картинок и видео через kie.ai одной командой из терминала и из Claude Code",
+  "description": "Анимированные лендинги через kie.ai: фото, видео, кадры для анимации при прокрутке и сборка страницы в один файл. Мост между kie.ai и агентом (Claude Code, Codex, Cursor).",
   "type": "module",
   "bin": {
     "mgen": "bin/mgen.js"
@@ -17,12 +17,20 @@
     "skill",
     "skill-site",
     "README.md",
-    "PRICES.md",
-    "MASTERCLASS.md"
+    "PRICES.md"
   ],
   "scripts": {
     "test": "node --test test/*.test.js"
   },
   "license": "MIT",
-  "private": false
+  "private": false,
+  "keywords": [
+    "kie.ai",
+    "landing",
+    "scroll-animation",
+    "video",
+    "image-generation",
+    "claude-code",
+    "agents"
+  ]
 }
