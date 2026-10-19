@@ -11,6 +11,32 @@
 
 Работает на macOS и Windows. Ничего, кроме Node.js, не нужно.
 
+## Установка: четыре команды
+
+Можно просто дать эту ссылку своему помощнику (Claude Code, Codex, Cursor) и сказать
+«поставь и настрой». Он выполнит это сам:
+
+```bash
+npm i -g https://github.com/Killblonde/mgen.git
+```
+
+```bash
+mgen setup
+```
+
+```bash
+mgen skills install
+```
+
+```bash
+mgen doctor
+```
+
+Первая ставит программу, вторая спрашивает ключ kie.ai, третья кладёт навыки для Claude Code,
+четвёртая проверяет, что всё на месте. Для других агентов вместо третьей команды:
+`mgen skills install --for agents` (файл `AGENTS.md`, его понимают Codex, Cursor и другие),
+`--for gemini` или `--for all`. Подробности ниже в разделах 4 и 8.
+
 ---
 
 ## 1. Что потребуется
@@ -243,25 +269,41 @@ mgen status dc1928bfcbc77cb6c85f3359a9c718b3
 
 ---
 
-## 8. Подключить навык в Claude Code
+## 8. Подключить навыки к агенту
 
-Чтобы не помнить флаги, попросите Claude Code: «сделай обложку», «оживи это фото» —
-и он сам соберёт команду. Для этого положите папку `skill/` в навыки Claude Code:
+Чтобы не помнить флаги, попросите помощника словами: «сделай обложку», «оживи это фото» —
+и он сам соберёт команду и покажет цену.
 
 Навыков два: `mgen` (картинки и видео) и `mgen-site` (сборка лендинга по скриншоту-референсу,
-с видео при прокрутке).
-
-**macOS / Linux**
+с видео при прокрутке). Ставятся одной командой, пути искать не нужно:
 
 ```bash
-mkdir -p ~/.claude/skills/mgen ~/.claude/skills/mgen-site && cp skill/SKILL.md ~/.claude/skills/mgen/ && cp skill-site/SKILL.md ~/.claude/skills/mgen-site/
+mgen skills install
 ```
 
-**Windows (PowerShell)**
+Команда кладёт оба навыка в `~/.claude/skills/` и работает одинаково на macOS и Windows.
+Посмотреть, что установлено:
 
-```powershell
-New-Item -ItemType Directory -Force "$HOME\.claude\skills\mgen","$HOME\.claude\skills\mgen-site"; Copy-Item skill\SKILL.md "$HOME\.claude\skills\mgen\"; Copy-Item skill-site\SKILL.md "$HOME\.claude\skills\mgen-site\"
+```bash
+mgen skills
 ```
+
+### Другие агенты: Codex, Cursor, Gemini
+
+Формат навыков понимает только Claude Code, но сам `mgen` это обычная команда терминала,
+и пользоваться им может любой агент. Те же правила выгружаются привычным для него файлом
+**в папку вашего проекта**:
+
+```bash
+mgen skills install --for agents
+```
+
+Это создаст `AGENTS.md` — общий формат, который читают Codex, Cursor и ещё десятки
+инструментов. Для Gemini CLI нужен свой файл: `--for gemini` положит `GEMINI.md`.
+Для правил Cursor: `--for cursor` (`.cursor/rules/mgen.mdc`). Всё сразу: `--for all`.
+
+Внутри этих файлов то же самое, что в навыках: когда звать `mgen`, как писать промпт,
+правило «сначала черновики, потом финал» и обязательный показ цены до траты денег.
 
 После этого перезапустите Claude Code. Проверить: напишите ему «сгенерируй картинку кота
 в скафандре» — он должен предложить команду `mgen` и показать цену. А если прислать скриншот
