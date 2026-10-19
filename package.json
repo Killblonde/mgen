@@ -1,0 +1,25 @@
+{
+  "name": "mgen",
+  "version": "1.0.0",
+  "description": "Генерация картинок и видео через kie.ai одной командой из терминала и из Claude Code",
+  "type": "module",
+  "bin": {
+    "mgen": "bin/mgen.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin",
+    "src",
+    "prices.json",
+    "skill",
+    "README.md",
+    "PRICES.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "license": "MIT",
+  "private": false
+}

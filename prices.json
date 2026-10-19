@@ -1,0 +1,62 @@
+{
+  "_комментарий": "Единственное место, где живут цены. Сверено вручную с https://kie.ai/pricing. Как обновлять — смотри PRICES.md.",
+  "updated": "2026-10-19",
+  "source": "https://kie.ai/pricing",
+  "creditsPerUsd": 200,
+  "models": {
+    "nano-banana-pro": {
+      "title": "Nano Banana Pro (Google)",
+      "kind": "image",
+      "unit": "картинка",
+      "prices": { "1K": 18, "2K": 18, "4K": 24 }
+    },
+    "nano-banana-2-1": {
+      "title": "Nano Banana 2.1 (Google)",
+      "kind": "image",
+      "unit": "картинка",
+      "prices": { "1K": 4, "2K": 6, "4K": 9 }
+    },
+    "nano-banana-2": {
+      "title": "Nano Banana 2 (Google)",
+      "kind": "image",
+      "unit": "картинка",
+      "prices": { "1K": 8, "2K": 12, "4K": 18 }
+    },
+    "nano-banana-2-lite": {
+      "title": "Nano Banana 2 Lite (Google)",
+      "kind": "image",
+      "unit": "картинка",
+      "prices": { "1K": 4 }
+    },
+    "z-image": {
+      "title": "Z-Image (Qwen)",
+      "kind": "image",
+      "unit": "картинка",
+      "prices": { "1K": 0.8 }
+    },
+    "google/nano-banana-edit": {
+      "title": "Nano Banana Edit (Google)",
+      "kind": "image",
+      "unit": "картинка",
+      "prices": { "1K": 4 }
+    },
+    "bytedance/seedance-2-5": {
+      "title": "Seedance 2.5 (ByteDance)",
+      "kind": "video",
+      "unit": "секунда видео",
+      "prices": { "480p": 28, "720p": 63, "1080p": 158 }
+    },
+    "bytedance/seedance-2-mini": {
+      "title": "Seedance 2 Mini (ByteDance)",
+      "kind": "video",
+      "unit": "секунда видео",
+      "prices": { "480p": 3.8, "720p": 8.2 }
+    },
+    "bytedance/seedance-2-fast": {
+      "title": "Seedance 2 Fast (ByteDance)",
+      "kind": "video",
+      "unit": "секунда видео",
+      "prices": { "480p": 11.7, "720p": 24.8 }
+    }
+  }
+}
