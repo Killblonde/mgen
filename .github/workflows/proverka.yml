@@ -1,0 +1,100 @@
+# Проверка mgen на настоящих Windows, macOS и Linux.
+# Запускается при каждом пуше в main и по кнопке «Run workflow».
+# Генерации через kie.ai здесь не делаются: ключ в CI не нужен и не хранится.
+name: Проверка
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  proverka:
+    name: ${{ matrix.os }}, Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        node: ['18', '22']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Тесты
+        shell: bash
+        run: node --test test/*.test.js
+
+      - name: Установка одной командой
+        shell: bash
+        run: |
+          npm i -g .
+          mgen --version
+          mgen help
+
+      - name: Подсказки команд
+        shell: bash
+        run: |
+          mgen models
+          mgen image --help
+          mgen video --help
+          mgen frames --help
+          mgen pack --help
+
+      - name: Без ключа команда не падает молча
+        shell: bash
+        run: |
+          # doctor выходит с кодом 1, когда нет ключа: это ожидаемо
+          mgen doctor || true
+          # а платная команда должна понятно сказать про ключ
+          if mgen image "тест" --draft --yes; then
+            echo "ОШИБКА: команда без ключа должна была остановиться"
+            exit 1
+          fi
+
+      - name: Навыки и правила для агентов
+        shell: bash
+        run: |
+          mgen skills install
+          mgen skills install --for all
+          test -f AGENTS.md
+          test -f GEMINI.md
+          test -f .cursor/rules/mgen.mdc
+          mgen skills
+
+      - name: Шаблон анимации
+        shell: bash
+        run: |
+          mkdir -p site
+          mgen template scroll --out ./site
+          test -f site/scroll-frames.js
+          test -f site/scroll-frames.css
+
+      - name: Нарезка кадров (ставит ffmpeg с нуля)
+        shell: bash
+        run: |
+          mgen frames examples/landing/video-istochnik.mp4 --out ./site/frames --count 20 --width 640 --yes
+          ls ./site/frames | head -3
+          test -f ./site/frames/frame-0001.jpg
+
+      - name: Сборка сайта в один файл
+        shell: bash
+        run: |
+          mgen pack examples/landing --out ./odin-fail.html --frames 20 --yes
+          node -e "const s=require('fs').statSync('./odin-fail.html'); console.log('вес файла:', (s.size/1024/1024).toFixed(1), 'МБ'); if (s.size < 200000) { console.log('ОШИБКА: файл подозрительно лёгкий'); process.exit(1); }"
+          node -e "const t=require('fs').readFileSync('./odin-fail.html','utf8'); if (/src=\"https?:/.test(t) || /href=\"https:\/\/fonts/.test(t)) { console.log('ОШИБКА: остались внешние запросы'); process.exit(1); } console.log('внешних запросов нет');"
+
+      - name: Ключ никуда не попал
+        shell: bash
+        run: |
+          # .github исключаем: в этом же файле написано имя переменной
+          if grep -rIl --exclude-dir=.git --exclude-dir=.github "KIE_API_KEY=" . ; then
+            echo "ОШИБКА: в файлах найден ключ"
+            exit 1
+          fi
+          echo "ключа в файлах нет"
