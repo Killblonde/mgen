@@ -3,7 +3,7 @@
   номер кадра зависит от положения прокрутки.
 
   Разметка:
-    <section class="mgen-scroll" data-frames="frames/frame-$.jpg" data-count="150">
+    <section class="mgen-scroll" data-frames="frames/frame-$.jpg" data-count="120">
       <div class="mgen-scroll__sticky">
         <canvas class="mgen-scroll__canvas"></canvas>
         <img class="mgen-scroll__fallback" src="frames/frame-0001.jpg" alt="">

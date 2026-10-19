@@ -13,7 +13,7 @@
 ```html
 <link rel="stylesheet" href="scroll-frames.css">
 
-<section class="mgen-scroll" data-frames="frames/frame-$.jpg" data-count="150" data-pad="4">
+<section class="mgen-scroll" data-frames="frames/frame-$.jpg" data-count="120" data-pad="4">
   <div class="mgen-scroll__sticky">
     <canvas class="mgen-scroll__canvas"></canvas>
     <img class="mgen-scroll__fallback" src="frames/frame-0001.jpg" alt="">
