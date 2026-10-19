@@ -1,0 +1,426 @@
+/* Анна Ковалёва — психолог. Палитра и ритм собраны по мотивам референса,
+   без копирования чужой вёрстки. */
+
+:root {
+  /* шрифты — переключаются панелью на шаге 3 */
+  --font-head: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --head-weight: 400;
+
+  /* светлая спокойная палитра */
+  --bg: #F4EFE8;
+  --bg-soft: #EAE2D7;
+  --ink: #2C2A26;
+  --ink-soft: #5B564E;
+  --accent: #8A6F4E;
+  --line: #DCD3C7;
+  --on-accent: #F4EFE8;
+
+  --pad: clamp(20px, 5vw, 64px);
+  --max: 1180px;
+}
+
+:root[data-palette="dark"] {
+  --bg: #211F1C;
+  --bg-soft: #2B2825;
+  --ink: #F0E9DF;
+  --ink-soft: #B7AE A1;
+  --ink-soft: #B7AEA1;
+  --accent: #C9A227;
+  --line: #3C3833;
+  --on-accent: #211F1C;
+}
+
+:root[data-fonts="manrope"] {
+  --font-head: "Manrope", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --head-weight: 600;
+}
+:root[data-fonts="playfair"] {
+  --font-head: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --head-weight: 400;
+}
+:root[data-fonts="unbounded"] {
+  --font-head: "Unbounded", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, sans-serif;
+  --head-weight: 500;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-head);
+  font-weight: var(--head-weight);
+  line-height: 1.08;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(38px, 6vw, 72px); }
+h2 { font-size: clamp(28px, 4vw, 46px); }
+h3 { font-size: clamp(19px, 2vw, 23px); line-height: 1.3; }
+
+p { margin: 0 0 18px; }
+em { color: var(--accent); font-style: italic; }
+
+a { color: inherit; }
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding-inline: var(--pad);
+}
+
+.muted { color: var(--ink-soft); font-weight: 300; }
+
+/* ---------- шапка ---------- */
+
+.topbar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 5;
+  /* меню стоит поверх кадров — лёгкая подложка, иначе ссылки тонут в фотографии */
+  background: linear-gradient(180deg, var(--bg) 0%, rgba(244, 239, 232, 0.72) 55%, rgba(244, 239, 232, 0) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px var(--pad);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.topbar__name {
+  font-family: var(--font-head);
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.topbar nav a {
+  margin-left: 26px;
+  text-decoration: none;
+  opacity: 0.72;
+}
+.topbar nav a:hover { opacity: 1; }
+
+/* ---------- первый экран: кадры при прокрутке ---------- */
+
+/* Настройки поверх scroll-frames.css: фон под цвет страницы и светлая подложка
+   слева, чтобы текст читался поверх кадров. */
+.hero-scroll { background: var(--bg); }
+
+.hero-scroll .mgen-scroll__overlay {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 var(--pad);
+}
+.hero-scroll .mgen-scroll__overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    var(--bg) 0%,
+    rgba(244, 239, 232, 0.94) 26%,
+    rgba(244, 239, 232, 0.72) 42%,
+    rgba(244, 239, 232, 0) 64%
+  );
+}
+.hero-scroll .hero__text {
+  position: relative;
+  width: min(100%, var(--max));
+  margin: 0 auto;
+  max-width: none;
+}
+.hero-scroll .hero__text > * { max-width: 20ch; }
+.hero-scroll .hero__text h1 { margin-bottom: 26px; }
+.hero-scroll .hero__lead { max-width: 40ch; color: var(--ink); opacity: 0.78; }
+
+/* ---------- первый экран (запасная раскладка) ---------- */
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(28px, 5vw, 60px);
+  align-items: center;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(110px, 14vh, 150px) var(--pad) clamp(60px, 9vh, 96px);
+  min-height: 100vh;
+}
+
+.hero__lead {
+  max-width: 46ch;
+  font-weight: 300;
+  color: var(--ink-soft);
+  font-size: clamp(16px, 1.3vw, 18px);
+}
+
+.hero h1 { margin-bottom: 24px; }
+
+.hero__shot {
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bg-soft);
+}
+.hero__shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* заглушка на время вёрстки */
+.ph {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: var(--bg-soft);
+  color: var(--ink-soft);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  border: 1px dashed var(--line);
+}
+
+/* расположение «фото во весь экран, текст поверх» */
+:root[data-layout="cover"] .hero {
+  grid-template-columns: 1fr;
+  align-content: end;
+  padding-bottom: clamp(70px, 12vh, 120px);
+}
+:root[data-layout="cover"] .hero__shot {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+:root[data-layout="cover"] .hero__text {
+  max-width: 18ch;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.35);
+}
+:root[data-layout="cover"] .hero__lead { max-width: 40ch; }
+
+.cta {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 16px 34px;
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  transition: background 0.2s;
+}
+.cta:hover { background: var(--accent); color: var(--on-accent); }
+
+.cta--ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+/* ---------- полоса рубрик ---------- */
+
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(20px, 5vw, 64px);
+  padding: 24px var(--pad);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+/* ---------- общие секции ---------- */
+
+section.band { padding: clamp(64px, 10vh, 112px) 0; }
+section.band + section.band { border-top: 1px solid var(--line); }
+
+.band__head { max-width: 30ch; margin-bottom: clamp(30px, 5vh, 52px); }
+.band__head p { margin-top: 18px; }
+
+.two {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(28px, 5vw, 64px);
+  align-items: start;
+}
+
+.about__title { margin-bottom: 26px; }
+
+.about__shot {
+  aspect-ratio: 3 / 4;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--bg-soft);
+}
+.about__shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.facts { list-style: none; margin: 26px 0 0; padding: 0; }
+.facts li {
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 18px;
+  font-size: 15px;
+}
+.facts b { font-weight: 500; min-width: 9ch; color: var(--accent); }
+
+/* карточки тем */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2vw, 28px);
+}
+.card {
+  padding: clamp(24px, 3vw, 34px);
+  background: var(--bg-soft);
+  border-radius: 2px;
+}
+.card h3 { margin-bottom: 14px; }
+.card p { font-size: 15px; color: var(--ink-soft); margin-bottom: 0; }
+.card__num {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+/* как проходит / цена */
+.steps { counter-reset: s; list-style: none; margin: 0; padding: 0; }
+.steps li {
+  counter-increment: s;
+  padding: 20px 0 20px 56px;
+  border-top: 1px solid var(--line);
+  position: relative;
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+.steps li::before {
+  content: counter(s, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 20px;
+  font-family: var(--font-head);
+  color: var(--accent);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+.steps b { color: var(--ink); font-weight: 500; }
+
+.price {
+  padding: clamp(28px, 4vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  align-self: start;
+}
+.price__sum {
+  font-family: var(--font-head);
+  font-size: clamp(34px, 4vw, 44px);
+  line-height: 1;
+  display: block;
+  margin-bottom: 8px;
+}
+.price ul { list-style: none; margin: 22px 0 0; padding: 0; font-size: 15px; color: var(--ink-soft); }
+.price li { padding: 10px 0; border-top: 1px solid var(--line); }
+
+/* вопросы */
+.faq { max-width: 74ch; }
+.faq details {
+  border-top: 1px solid var(--line);
+  padding: 4px 0;
+}
+.faq summary {
+  cursor: pointer;
+  padding: 18px 0;
+  font-size: 17px;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--accent); font-size: 20px; line-height: 1; }
+.faq details[open] summary::after { content: "–"; }
+.faq p { color: var(--ink-soft); font-size: 16px; padding-bottom: 8px; max-width: 64ch; }
+
+/* финал */
+.final { text-align: center; }
+.final h2 { margin-bottom: 22px; }
+.final p { margin-inline: auto; max-width: 48ch; }
+
+.foot {
+  padding: 34px var(--pad);
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+/* ---------- телефон ---------- */
+
+@media (max-width: 860px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 104px;
+  }
+  .hero__shot { max-width: 460px; }
+  .two { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; }
+  .topbar nav { display: none; }
+  :root[data-layout="cover"] .hero__text { max-width: none; }
+}
+
+/* На телефоне анимации нет (кадры не грузятся), остаётся одна картинка.
+   Текст поверх неё не кладём — на 375 пикселях он тонет в лице.
+   Фото становится полосой, текст уезжает под него. */
+@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+  .hero-scroll { height: auto; }
+  .hero-scroll .mgen-scroll__sticky { height: auto; overflow: visible; }
+  .hero-scroll .mgen-scroll__fallback {
+    position: relative;
+    inset: auto;
+    height: 46vh;
+    min-height: 280px;
+    object-position: 58% 30%;
+  }
+  .hero-scroll .mgen-scroll__overlay {
+    position: relative;
+    inset: auto;
+    padding: clamp(28px, 6vw, 40px) var(--pad) 4px;
+  }
+  .hero-scroll .mgen-scroll__overlay::before { display: none; }
+  .hero-scroll .hero__text > *,
+  .hero-scroll .hero__lead { max-width: none; }
+  .hero-scroll .hero__lead { opacity: 1; color: var(--ink-soft); }
+}

@@ -90,8 +90,8 @@ export async function frames(argv) {
   }
 
   say('');
-  say(dim('Кадры называются frame-0001.jpg и дальше по порядку — ровно так их ждёт'));
-  say(dim('шаблон анимации при прокрутке из папки templates/scroll в репозитории mgen.'));
+  say(dim('Кадры называются frame-0001.jpg и дальше по порядку: ровно так их ждёт шаблон,'));
+  say(dim(`который кладёт команда «${CLI_NAME} template scroll --out ./site».`));
 
   return { dir: outDir, ...result };
 }
